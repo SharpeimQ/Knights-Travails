@@ -4,14 +4,19 @@ require_relative 'space'
 
 # Board class
 class Board
-  attr_accessor :board, :knight
+  attr_accessor :board, :knight, :length
 
   def initialize(x_cord, y_cord)
-    raise ArgumentError if x_cord > 7 || x_cord.negative?
-    raise ArgumentError if y_cord > 7 || y_cord.negative?
+    arg_error(y_cord, x_cord)
 
-    @board = Array.new(8) { |i| Array.new(8) { |j| Space.new([i, j]) } }
-    @knight = board[x_cord][y_cord]
+    @length = 7
+    @board = Array.new(8) { |i| Array.new(8) { |j| Space.new([j, length - i]) } }
+    @knight = board[length - y_cord][x_cord]
+  end
+
+  def arg_error(first, second)
+    raise ArgumentError if first > 7 || first.negative?
+    raise ArgumentError if second > 7 || second.negative?
   end
 
   def display_cords
@@ -25,6 +30,7 @@ class Board
 
   def display_knight
     p knight.position
+    p knight
   end
 
   def display_board
