@@ -12,6 +12,31 @@ class Board
     @length = 7
     @board = Array.new(8) { |i| Array.new(8) { |j| Space.new([j, length - i]) } }
     @knight = board[length - y_cord][x_cord]
+    @knight_moves = k_moves(knight.position)
+  end
+
+  def k_moves(position)
+    move_offsets = {
+      [-2, 1] => true, [-1, 2] => true, [1, 2] => true, [2, 1] => true,
+      [2, -1] => true, [1, -2] => true, [-1, -2] => true, [-2, -1] => true
+    }
+    k_moves_h(move_offsets, position)
+  end
+
+  def k_moves_h(hash, position)
+    moves = []
+
+    hash.each_key do |key|
+      x = key[0] + position[0]
+      y = key[1] + position[1]
+
+      moves << Space.new([x, y]) if x.between?(0, 7) && y.between?(0, 7)
+    end
+    knight.moves = moves
+  end
+
+  def get_pointer(position)
+    board[position[0]][position[1]]
   end
 
   def arg_error(first, second)
@@ -30,16 +55,25 @@ class Board
 
   def display_knight
     p knight.position
-    p knight
+    p knight.moves
   end
 
   def display_board
     board.each do |row|
       row.each do |space|
-        print '[K]' if space == knight
-        print '[ ]' unless space == knight
+        display_board_h(space)
       end
       puts
+    end
+  end
+
+  def display_board_h(space)
+    if space == knight
+      print '[K]'
+    elsif knight.moves.any? { |move| move.position == space.position }
+      print '[M]'
+    else
+      print '[ ]'
     end
   end
 end
