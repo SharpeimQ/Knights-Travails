@@ -76,4 +76,31 @@ class Board
       print '[ ]'
     end
   end
+
+  def target_space(target)
+    p target_space_h(target, knight).push(target)
+  end
+
+  def target_space_h(target, position = knight)
+    return nil if position.moves.nil?
+
+    queue = [position]
+    result = []
+
+    until queue.empty?
+      position = queue.first
+      position.moves = k_moves(position.position)
+
+      result << queue.first.position
+
+      if position.moves.any? { |move| move.position == target }
+        return result
+      elsif knight.moves
+        queue.concat(position.moves)
+      end
+
+      queue.shift
+      queue = queue.uniq(&:position)
+    end
+  end
 end

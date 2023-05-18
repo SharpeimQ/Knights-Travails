@@ -2,7 +2,13 @@
 
 require_relative './lib/board'
 
-chess = Board.new(0, 1)
-chess.display_cords
-chess.display_board
-chess.display_knight
+def knight_moves(current, target)
+  x = current[0]
+  y = current[1]
+  chess = Board.new(x, y)
+  chess.display_cords
+  chess.display_board
+  chess.target_space(target)
+end
+
+knight_moves([3, 3], [4, 3])
