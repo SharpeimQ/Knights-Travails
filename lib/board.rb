@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'space'
+require 'set'
 
 # Board class
 class Board
@@ -77,8 +78,50 @@ class Board
     end
   end
 
+  def shortest_target_space(target)
+    result = shortest_target_space_h(target, knight)
+
+    puts "The Knight can move to #{target} in #{result.size - 2} Moves!"
+    p result
+  end
+
+  def shortest_target_space_h(target, position = knight)
+    return nil if position.moves.nil?
+
+    queue = [position]
+    visited = Set.new([position])
+    path = {}
+
+    until queue.empty?
+      current = queue.shift
+      current.moves = k_moves(current.position)
+
+      return reconstruct_path(path, current) if current.position == target
+
+      current.moves.each do |move|
+        unless visited.include?(move)
+          visited.add(move)
+          path[move] = current
+          queue << move
+        end
+      end
+    end
+  end
+
+  def reconstruct_path(path, space)
+    path_list = []
+    while space != knight
+      path_list.unshift(space.position)
+      space = path[space]
+    end
+    path_list.unshift(knight.position)
+  end
+
   def target_space(target)
-    p target_space_h(target, knight).push(target)
+    result = target_space_h(target, knight)
+
+    puts "The Knight can move to #{target} in #{result.size - 2} Moves!"
+    p result
   end
 
   def target_space_h(target, position = knight)
@@ -91,10 +134,11 @@ class Board
       position = queue.first
       position.moves = k_moves(position.position)
 
-      result << queue.first.position
+      result << queue.position
 
       if position.moves.any? { |move| move.position == target }
-        return result
+        result << target
+        return result.map(&:position)
       elsif knight.moves
         queue.concat(position.moves)
       end

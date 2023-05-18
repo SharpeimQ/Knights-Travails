@@ -8,7 +8,7 @@ def knight_moves(current, target)
   chess = Board.new(x, y)
   chess.display_cords
   chess.display_board
-  chess.target_space(target)
+  chess.shortest_target_space(target)
 end
 
 knight_moves([3, 3], [4, 3])
